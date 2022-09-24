@@ -1,0 +1,51 @@
+ clear all
+close all
+clc;
+
+[y,fs]=audioread('Voice 011.m4a'),
+sound='voice 011.m4a' 
+ Nsamps = length(y)
+ %Prepare time data for plot
+ t = (1/fs)*(1:Nsamps)  
+ %Do Fourier Transform
+   %Retain Magnitude
+   y_fft = abs(fft(y)); 
+   %Discard Half of Points
+   y_fft = y_fft(1:Nsamps/2);
+   %Prepare freq data for plot
+   f = fs*(0:Nsamps/2-1)/Nsamps; 
+   %Plot Sound File in Time Domain
+   plot(t, y)
+   xlabel('Time (s)')
+   ylabel('Amplitude')
+   title('sound Time Domain')
+
+%Plot Sound File in Frequency Domain
+plot(f, y_fft)
+xlim([0 1000])
+xlabel('Frequency (Hz)')
+ylabel('Amplitude')
+title('Frequency Response of sound')
+
+% we want to determine WHEN certain frequency occur
+% So we need a window to do divided signal in various segment and analysis
+% them 
+% Do Time-Frequency plot using spectrogram/STFFT
+spectrogram (y,[],[],[],fs,'yaxis');colorbar;
+% based on "uncertainly principle" we cannot simultaneously sharply determine a signal in both the time domain and frequency domain
+% shorter window segment provides good time resolution 
+spectrogram(y,kaiser(64,18),60,64,fs,'yaxis');colorbar;
+ title('Time-Frequency Domain with more resolution in time');
+      xlabel('Time (s)')
+      ylabel('Frequency (kHz)')
+      view (-45,65)
+      colormap jet
+ 
+ % longer window segment provides good frequency resolution
+ 
+spectrogram(y,kaiser(1600,18),1500,1600,fs,'yaxis');colorbar;
+ title('Time-Frequency Domain with more resolution in frequency');
+      xlabel('Time (s)')
+      ylabel('Frequency (kHz)')
+       view (-45,65)
+      colormap jet
